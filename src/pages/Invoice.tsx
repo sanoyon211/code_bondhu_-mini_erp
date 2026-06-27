@@ -85,7 +85,7 @@ export default function Invoice() {
             <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Billed To</h3>
             <div className="text-slate-900">
               <p className="font-bold">{sale.customers?.name}</p>
-              {sale.customers?.company && <p>{sale.customers.company}</p>}
+
               {sale.customers?.address && <p className="mt-1">{sale.customers.address}</p>}
               {sale.customers?.email && <p className="mt-1">{sale.customers.email}</p>}
               {sale.customers?.phone && <p>{sale.customers.phone}</p>}
@@ -95,7 +95,7 @@ export default function Invoice() {
             <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Invoice Details</h3>
             <div className="text-slate-900">
               <p><span className="font-semibold text-slate-600 mr-2">Date:</span> {new Date(sale.created_at).toLocaleDateString()}</p>
-              <p className="mt-1"><span className="font-semibold text-slate-600 mr-2">Status:</span> {sale.status}</p>
+
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function Invoice() {
               <td className="py-4 text-slate-900">{sale.products?.name}</td>
               <td className="py-4 text-center text-slate-600">{sale.quantity}</td>
               <td className="py-4 text-right text-slate-600">${Number(sale.unit_price).toFixed(2)}</td>
-              <td className="py-4 text-right font-medium text-slate-900">${Number(sale.total_amount).toFixed(2)}</td>
+              <td className="py-4 text-right font-medium text-slate-900">${Number((sale.quantity || 0) * (sale.unit_price || 0)).toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
@@ -123,21 +123,16 @@ export default function Invoice() {
           <div className="w-1/2">
             <div className="flex justify-between py-2 border-b border-slate-200">
               <span className="font-semibold text-slate-600">Subtotal</span>
-              <span className="text-slate-900">${Number(sale.total_amount).toFixed(2)}</span>
+              <span className="text-slate-900">${Number((sale.quantity || 0) * (sale.unit_price || 0)).toFixed(2)}</span>
             </div>
             <div className="flex justify-between py-3">
               <span className="font-bold text-lg text-slate-900">Total</span>
-              <span className="font-bold text-lg text-blue-600">${Number(sale.total_amount).toFixed(2)}</span>
+              <span className="font-bold text-lg text-blue-600">${Number((sale.quantity || 0) * (sale.unit_price || 0)).toFixed(2)}</span>
             </div>
           </div>
         </div>
 
-        {sale.notes && (
-          <div className="mt-8 border-t border-slate-200 pt-8">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Notes</h3>
-            <p className="text-slate-600">{sale.notes}</p>
-          </div>
-        )}
+
       </div>
     </div>
   );

@@ -4,9 +4,9 @@ export interface Product {
   name: string;
   sku: string;
   description?: string;
-  price: number;
+  selling_price: number;
   cost_price: number;
-  stock_quantity: number;
+  stock: number;
   category?: string;
   supplier_id?: string;
 }
@@ -18,14 +18,12 @@ export interface Customer {
   email: string;
   phone?: string;
   address?: string;
-  company?: string;
 }
 
 export interface Supplier {
   id: string; // UUID
   created_at: string;
   name: string;
-  contact_name?: string;
   email: string;
   phone?: string;
   address?: string;
@@ -38,9 +36,6 @@ export interface Purchase {
   product_id: string;
   quantity: number;
   unit_cost: number;
-  total_amount: number;
-  status: 'PENDING' | 'COMPLETED' | 'CANCELLED';
-  notes?: string;
   // Joined fields
   products?: { name: string };
   suppliers?: { name: string };
@@ -54,11 +49,8 @@ export interface Sale {
   product_id: string;
   quantity: number;
   unit_price: number;
-  total_amount: number;
-  status: 'PENDING' | 'COMPLETED' | 'CANCELLED';
   payment_method?: string;
-  notes?: string;
   // Joined fields
   products?: { name: string };
-  customers?: { name: string; email: string; phone: string; address: string; company?: string };
+  customers?: { name: string; email: string; phone: string; address: string };
 }

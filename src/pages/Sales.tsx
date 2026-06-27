@@ -50,7 +50,6 @@ export default function Sales() {
     product_id: '',
     quantity: 1,
     unit_price: 0,
-    notes: '',
   });
 
   const loadData = async () => {
@@ -81,7 +80,6 @@ export default function Sales() {
       product_id: '',
       quantity: 1,
       unit_price: 0,
-      notes: '',
     });
     setIsDialogOpen(true);
   };
@@ -104,7 +102,7 @@ export default function Sales() {
       if (name === 'product_id') {
         const selectedProduct = products.find(p => p.id === value);
         if (selectedProduct) {
-          updates.unit_price = selectedProduct.price || 0;
+          updates.unit_price = selectedProduct.selling_price || 0;
         }
       }
       return updates;
@@ -129,9 +127,6 @@ export default function Sales() {
         product_id: formData.product_id,
         quantity: formData.quantity,
         unit_price: formData.unit_price,
-        total_amount: formData.quantity * formData.unit_price,
-        status: 'COMPLETED',
-        notes: formData.notes,
       });
       toast.success('Sale completed successfully!', {
         action: {
@@ -173,7 +168,6 @@ export default function Sales() {
                 <TableHead className="font-semibold text-slate-900">Product</TableHead>
                 <TableHead className="font-semibold text-slate-900 text-right">Qty</TableHead>
                 <TableHead className="font-semibold text-slate-900 text-right">Total</TableHead>
-                <TableHead className="font-semibold text-slate-900">Status</TableHead>
                 <TableHead className="font-semibold text-slate-900 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -213,15 +207,7 @@ export default function Sales() {
                       {sale.products?.name || 'Unknown'}
                     </TableCell>
                     <TableCell className="text-right">{sale.quantity}</TableCell>
-                    <TableCell className="text-right font-medium">${Number(sale.total_amount || 0).toFixed(2)}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant="outline" 
-                        className={sale.status === 'COMPLETED' ? 'bg-green-100 text-green-800 border-green-200 font-medium' : 'font-medium'}
-                      >
-                        {sale.status}
-                      </Badge>
-                    </TableCell>
+                    <TableCell className="text-right font-medium">${Number((sale.quantity || 0) * (sale.unit_price || 0)).toFixed(2)}</TableCell>
                     <TableCell className="text-right">
                       <Button 
                         variant="ghost" 
@@ -252,7 +238,9 @@ export default function Sales() {
                 <Label>Customer *</Label>
                 <Select onValueChange={(val) => handleSelectChange('customer_id', val)} value={formData.customer_id}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a customer" />
+                    <SelectValue placeholder="Select a customer">
+                      {formData.customer_id ? customers.find(c => c.id === formData.customer_id)?.name : "Select a customer"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {customers.map(c => (
@@ -266,12 +254,14 @@ export default function Sales() {
                 <Label>Product *</Label>
                 <Select onValueChange={(val) => handleSelectChange('product_id', val)} value={formData.product_id}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a product" />
+                    <SelectValue placeholder="Select a product">
+                      {formData.product_id ? products.find(p => p.id === formData.product_id)?.name : "Select a product"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {products.map(p => (
                       <SelectItem key={p.id} value={p.id}>
-                        {p.name} (Stock: {p.stock_quantity})
+                        {p.name} (Stock: {p.stock})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -305,16 +295,6 @@ export default function Sales() {
                     required 
                   />
                 </div>
-              </div>
-              
-              <div className="grid gap-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Input 
-                  id="notes" 
-                  name="notes" 
-                  value={formData.notes} 
-                  onChange={handleChange} 
-                />
               </div>
 
               <div className="mt-2 text-right">

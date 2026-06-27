@@ -19,9 +19,10 @@ export const productService = {
   },
 
   async createProduct(payload: CreateProductPayload): Promise<Product> {
+    const { description, ...insertPayload } = payload;
     const { data, error } = await supabase
       .from('products')
-      .insert([payload])
+      .insert([insertPayload])
       .select()
       .single();
 
@@ -33,9 +34,10 @@ export const productService = {
   },
 
   async updateProduct(id: string, payload: UpdateProductPayload): Promise<Product> {
+    const { description, ...updatePayload } = payload;
     const { data, error } = await supabase
       .from('products')
-      .update(payload)
+      .update(updatePayload)
       .eq('id', id)
       .select()
       .single();

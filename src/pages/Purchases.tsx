@@ -47,7 +47,6 @@ export default function Purchases() {
     product_id: '',
     quantity: 1,
     unit_cost: 0,
-    notes: '',
   });
 
   const loadData = async () => {
@@ -78,7 +77,6 @@ export default function Purchases() {
       product_id: '',
       quantity: 1,
       unit_cost: 0,
-      notes: '',
     });
     setIsDialogOpen(true);
   };
@@ -126,9 +124,6 @@ export default function Purchases() {
         product_id: formData.product_id,
         quantity: formData.quantity,
         unit_cost: formData.unit_cost,
-        total_amount: formData.quantity * formData.unit_cost,
-        status: 'COMPLETED',
-        notes: formData.notes,
       });
       toast.success('Purchase recorded and stock updated successfully');
       setIsDialogOpen(false);
@@ -164,7 +159,6 @@ export default function Purchases() {
                 <TableHead className="font-semibold text-slate-900 text-right">Quantity</TableHead>
                 <TableHead className="font-semibold text-slate-900 text-right">Unit Cost</TableHead>
                 <TableHead className="font-semibold text-slate-900 text-right">Total</TableHead>
-                <TableHead className="font-semibold text-slate-900">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -201,15 +195,7 @@ export default function Purchases() {
                     </TableCell>
                     <TableCell className="text-right">{purchase.quantity}</TableCell>
                     <TableCell className="text-right">${Number(purchase.unit_cost || 0).toFixed(2)}</TableCell>
-                    <TableCell className="text-right font-medium">${Number(purchase.total_amount || 0).toFixed(2)}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant="outline" 
-                        className={purchase.status === 'COMPLETED' ? 'bg-green-100 text-green-800 border-green-200 font-medium' : 'font-medium'}
-                      >
-                        {purchase.status}
-                      </Badge>
-                    </TableCell>
+                    <TableCell className="text-right font-medium">${Number((purchase.quantity || 0) * (purchase.unit_cost || 0)).toFixed(2)}</TableCell>
                   </TableRow>
                 ))
               )}
@@ -229,7 +215,9 @@ export default function Purchases() {
                 <Label>Supplier *</Label>
                 <Select onValueChange={(val) => handleSelectChange('supplier_id', val)} value={formData.supplier_id}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a supplier" />
+                    <SelectValue placeholder="Select a supplier">
+                      {formData.supplier_id ? suppliers.find(s => s.id === formData.supplier_id)?.name : "Select a supplier"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {suppliers.map(s => (
@@ -243,7 +231,9 @@ export default function Purchases() {
                 <Label>Product *</Label>
                 <Select onValueChange={(val) => handleSelectChange('product_id', val)} value={formData.product_id}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a product" />
+                    <SelectValue placeholder="Select a product">
+                      {formData.product_id ? products.find(p => p.id === formData.product_id)?.name : "Select a product"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {products.map(p => (
@@ -280,16 +270,6 @@ export default function Purchases() {
                     required 
                   />
                 </div>
-              </div>
-              
-              <div className="grid gap-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Input 
-                  id="notes" 
-                  name="notes" 
-                  value={formData.notes} 
-                  onChange={handleChange} 
-                />
               </div>
 
               <div className="mt-2 text-right">

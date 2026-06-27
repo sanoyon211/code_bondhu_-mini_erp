@@ -36,9 +36,9 @@ export default function Products() {
     name: '',
     sku: '',
     category: '',
-    price: 0,
+    selling_price: 0,
     cost_price: 0,
-    stock_quantity: 0,
+    stock: 0,
     description: '',
   });
 
@@ -68,9 +68,9 @@ export default function Products() {
         name: product.name,
         sku: product.sku,
         category: product.category || '',
-        price: product.price,
+        selling_price: product.selling_price,
         cost_price: product.cost_price,
-        stock_quantity: product.stock_quantity,
+        stock: product.stock,
         description: product.description || '',
       });
     } else {
@@ -79,9 +79,9 @@ export default function Products() {
         name: '',
         sku: '',
         category: '',
-        price: 0,
+        selling_price: 0,
         cost_price: 0,
-        stock_quantity: 0,
+        stock: 0,
         description: '',
       });
     }
@@ -97,7 +97,7 @@ export default function Products() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'price' || name === 'cost_price' || name === 'stock_quantity' 
+      [name]: name === 'selling_price' || name === 'cost_price' || name === 'stock' 
         ? parseFloat(value) || 0 
         : value,
     }));
@@ -198,10 +198,10 @@ export default function Products() {
                     <TableCell className="font-medium text-slate-900">{product.name}</TableCell>
                     <TableCell className="text-slate-500">{product.sku}</TableCell>
                     <TableCell className="text-slate-500">{product.category || '-'}</TableCell>
-                    <TableCell className="text-right font-medium">${Number(product.price || 0).toFixed(2)}</TableCell>
-                    <TableCell className="text-right">{product.stock_quantity}</TableCell>
+                    <TableCell className="text-right font-medium">${Number(product.selling_price || 0).toFixed(2)}</TableCell>
+                    <TableCell className="text-right">{product.stock}</TableCell>
                     <TableCell>
-                      <StatusBadge status={getStockStatus(product.stock_quantity)} />
+                      <StatusBadge status={getStockStatus(product.stock)} />
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
@@ -276,14 +276,14 @@ export default function Products() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="price">Selling Price *</Label>
+                  <Label htmlFor="selling_price">Selling Price *</Label>
                   <Input 
-                    id="price" 
-                    name="price" 
+                    id="selling_price" 
+                    name="selling_price" 
                     type="number" 
                     min="0"
                     step="0.01"
-                    value={formData.price || ''} 
+                    value={formData.selling_price || ''} 
                     onChange={handleChange} 
                     required 
                   />
@@ -302,14 +302,14 @@ export default function Products() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="stock_quantity">Stock *</Label>
+                  <Label htmlFor="stock">Stock *</Label>
                   <Input 
-                    id="stock_quantity" 
-                    name="stock_quantity" 
+                    id="stock" 
+                    name="stock" 
                     type="number" 
                     min="0"
                     step="1"
-                    value={formData.stock_quantity || ''} 
+                    value={formData.stock || ''} 
                     onChange={handleChange} 
                     required 
                   />

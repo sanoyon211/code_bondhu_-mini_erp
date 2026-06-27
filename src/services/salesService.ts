@@ -37,13 +37,13 @@ export const salesService = {
     // 1. Fetch current product stock
     const { data: product, error: productError } = await supabase
       .from('products')
-      .select('stock_quantity')
+      .select('stock')
       .eq('id', payload.product_id)
       .single();
 
     if (productError) throw new Error(`Failed to fetch product stock: ${productError.message}`);
 
-    const currentStock = product.stock_quantity || 0;
+    const currentStock = product.stock || 0;
 
     // 2. Check stock
     if (currentStock < payload.quantity) {
@@ -67,7 +67,7 @@ export const salesService = {
     // 5. Update product stock
     const { error: updateError } = await supabase
       .from('products')
-      .update({ stock_quantity: newStock })
+      .update({ stock: newStock })
       .eq('id', payload.product_id);
 
     if (updateError) throw new Error(`Failed to update product stock: ${updateError.message}`);

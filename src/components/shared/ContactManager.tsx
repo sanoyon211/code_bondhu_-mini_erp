@@ -30,8 +30,6 @@ export interface ContactData {
   email: string;
   phone?: string;
   address?: string;
-  company?: string; // For customers
-  contact_name?: string; // For suppliers
   created_at?: string;
 }
 
@@ -66,8 +64,6 @@ export function ContactManager({
     email: '',
     phone: '',
     address: '',
-    company: '',
-    contact_name: '',
   };
   
   const [formData, setFormData] = useState(defaultFormData);
@@ -99,8 +95,6 @@ export function ContactManager({
         email: item.email,
         phone: item.phone || '',
         address: item.address || '',
-        company: item.company || '',
-        contact_name: item.contact_name || '',
       });
     } else {
       setEditingItem(null);
@@ -129,12 +123,6 @@ export function ContactManager({
         phone: formData.phone || null,
         address: formData.address || null,
       };
-      
-      if (type === 'customer') {
-        payload.company = formData.company || null;
-      } else {
-        payload.contact_name = formData.contact_name || null;
-      }
 
       if (editingItem) {
         await updateData(editingItem.id, payload);
@@ -193,8 +181,6 @@ export function ContactManager({
             <TableHeader>
               <TableRow className="bg-slate-50">
                 <TableHead className="font-semibold text-slate-900">Name</TableHead>
-                {type === 'customer' && <TableHead className="font-semibold text-slate-900">Company</TableHead>}
-                {type === 'supplier' && <TableHead className="font-semibold text-slate-900">Contact Person</TableHead>}
                 <TableHead className="font-semibold text-slate-900">Email</TableHead>
                 <TableHead className="font-semibold text-slate-900">Phone</TableHead>
                 <TableHead className="font-semibold text-slate-900">Address</TableHead>
@@ -225,8 +211,6 @@ export function ContactManager({
                 dataList.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium text-slate-900">{item.name}</TableCell>
-                    {type === 'customer' && <TableCell className="text-slate-500">{item.company || '-'}</TableCell>}
-                    {type === 'supplier' && <TableCell className="text-slate-500">{item.contact_name || '-'}</TableCell>}
                     <TableCell className="text-slate-500">{item.email}</TableCell>
                     <TableCell className="text-slate-500">{item.phone || '-'}</TableCell>
                     <TableCell className="text-slate-500 max-w-xs truncate" title={item.address}>{item.address || '-'}</TableCell>
@@ -278,30 +262,6 @@ export function ContactManager({
                   required 
                 />
               </div>
-
-              {type === 'customer' && (
-                <div className="grid gap-2">
-                  <Label htmlFor="company">Company</Label>
-                  <Input 
-                    id="company" 
-                    name="company" 
-                    value={formData.company} 
-                    onChange={handleChange} 
-                  />
-                </div>
-              )}
-
-              {type === 'supplier' && (
-                <div className="grid gap-2">
-                  <Label htmlFor="contact_name">Contact Person</Label>
-                  <Input 
-                    id="contact_name" 
-                    name="contact_name" 
-                    value={formData.contact_name} 
-                    onChange={handleChange} 
-                  />
-                </div>
-              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
