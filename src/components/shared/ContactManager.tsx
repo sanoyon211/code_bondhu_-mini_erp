@@ -168,7 +168,7 @@ export function ContactManager({
         title={title} 
         description={description}
         action={
-          <Button onClick={() => handleOpenDialog()} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={() => handleOpenDialog()} className="bg-violet-600 hover:bg-violet-700">
             <Plus className="w-4 h-4 mr-2" />
             Add {type === 'customer' ? 'Customer' : 'Supplier'}
           </Button>
@@ -201,7 +201,7 @@ export function ContactManager({
                     <div className="flex flex-col items-center justify-center text-slate-500">
                       <AlertCircle className="w-8 h-8 mb-2 text-slate-400" />
                       <p>No {type}s found.</p>
-                      <Button variant="link" onClick={() => handleOpenDialog()} className="mt-1 text-blue-600">
+                      <Button variant="link" onClick={() => handleOpenDialog()} className="mt-1 text-violet-600">
                         Add your first {type}
                       </Button>
                     </div>
@@ -220,7 +220,7 @@ export function ContactManager({
                           variant="ghost" 
                           size="sm" 
                           onClick={() => handleOpenDialog(item)}
-                          className="h-8 px-2 text-slate-600 hover:text-blue-600"
+                          className="h-8 px-2 text-slate-600 hover:text-violet-600"
                         >
                           <Edit className="w-4 h-4" />
                           <span className="sr-only">Edit</span>
@@ -263,7 +263,7 @@ export function ContactManager({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email *</Label>
                   <Input 
@@ -301,7 +301,7 @@ export function ContactManager({
               <Button type="button" variant="outline" onClick={handleCloseDialog} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+              <Button type="submit" className="bg-violet-600 hover:bg-violet-700" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 {editingItem ? 'Save Changes' : `Create ${type === 'customer' ? 'Customer' : 'Supplier'}`}
               </Button>

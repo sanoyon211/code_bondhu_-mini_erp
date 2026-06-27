@@ -150,7 +150,7 @@ export default function Sales() {
         title="Sales" 
         description="Record new sales and manage invoices."
         action={
-          <Button onClick={handleOpenDialog} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleOpenDialog} className="bg-violet-600 hover:bg-violet-700">
             <Plus className="w-4 h-4 mr-2" />
             New Sale
           </Button>
@@ -185,7 +185,7 @@ export default function Sales() {
                     <div className="flex flex-col items-center justify-center text-slate-500">
                       <AlertCircle className="w-8 h-8 mb-2 text-slate-400" />
                       <p>No sales yet.</p>
-                      <Button variant="link" onClick={handleOpenDialog} className="mt-1 text-blue-600">
+                      <Button variant="link" onClick={handleOpenDialog} className="mt-1 text-violet-600">
                         Record your first sale
                       </Button>
                     </div>
@@ -213,7 +213,7 @@ export default function Sales() {
                         variant="ghost" 
                         size="sm" 
                         onClick={() => navigate(`/sales/${sale.id}/invoice`)}
-                        className="h-8 px-2 text-slate-600 hover:text-blue-600"
+                        className="h-8 px-2 text-slate-600 hover:text-violet-600"
                       >
                         <FileText className="w-4 h-4 mr-1" />
                         Invoice
@@ -268,7 +268,7 @@ export default function Sales() {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="quantity">Quantity *</Label>
                   <Input 
@@ -308,7 +308,7 @@ export default function Sales() {
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+              <Button type="submit" className="bg-violet-600 hover:bg-violet-700" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 Confirm Sale
               </Button>

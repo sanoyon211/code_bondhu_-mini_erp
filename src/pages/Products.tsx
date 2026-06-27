@@ -151,7 +151,7 @@ export default function Products() {
         title="Products" 
         description="Manage your product inventory."
         action={
-          <Button onClick={() => handleOpenDialog()} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={() => handleOpenDialog()} className="bg-violet-600 hover:bg-violet-700">
             <Plus className="w-4 h-4 mr-2" />
             Add Product
           </Button>
@@ -186,7 +186,7 @@ export default function Products() {
                     <div className="flex flex-col items-center justify-center text-slate-500">
                       <AlertCircle className="w-8 h-8 mb-2 text-slate-400" />
                       <p>No products found.</p>
-                      <Button variant="link" onClick={() => handleOpenDialog()} className="mt-1 text-blue-600">
+                      <Button variant="link" onClick={() => handleOpenDialog()} className="mt-1 text-violet-600">
                         Add your first product
                       </Button>
                     </div>
@@ -209,7 +209,7 @@ export default function Products() {
                           variant="ghost" 
                           size="sm" 
                           onClick={() => handleOpenDialog(product)}
-                          className="h-8 px-2 text-slate-600 hover:text-blue-600"
+                          className="h-8 px-2 text-slate-600 hover:text-violet-600"
                         >
                           <Edit className="w-4 h-4" />
                           <span className="sr-only">Edit</span>
@@ -241,7 +241,7 @@ export default function Products() {
               <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Product Name *</Label>
                   <Input 
@@ -274,7 +274,7 @@ export default function Products() {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="selling_price">Selling Price *</Label>
                   <Input 
@@ -331,7 +331,7 @@ export default function Products() {
               <Button type="button" variant="outline" onClick={handleCloseDialog} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+              <Button type="submit" className="bg-violet-600 hover:bg-violet-700" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 {editingProduct ? 'Save Changes' : 'Create Product'}
               </Button>

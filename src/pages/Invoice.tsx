@@ -37,7 +37,7 @@ export default function Invoice() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
       </div>
     );
   }
@@ -57,11 +57,11 @@ export default function Invoice() {
     <div className="max-w-4xl mx-auto py-8">
       {/* Non-printable header actions */}
       <div className="flex justify-between items-center mb-8 print:hidden">
-        <Button variant="ghost" onClick={() => navigate('/sales')} className="text-slate-600 hover:text-blue-600">
+        <Button variant="ghost" onClick={() => navigate('/sales')} className="text-slate-600 hover:text-violet-600">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Sales
         </Button>
-        <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={handlePrint} className="bg-violet-600 hover:bg-violet-700">
           <Printer className="w-4 h-4 mr-2" />
           Print Invoice
         </Button>
@@ -75,12 +75,12 @@ export default function Invoice() {
             <p className="text-slate-500 mt-1">{sale.invoice_no}</p>
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-bold text-blue-600">Mini ERP</h2>
+            <h2 className="text-xl font-bold text-violet-600">Mini ERP</h2>
             <p className="text-slate-500 text-sm mt-1">123 Business Road<br/>Tech City, 10001<br/>contact@minierp.com</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
           <div>
             <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Billed To</h3>
             <div className="text-slate-900">
@@ -100,7 +100,8 @@ export default function Invoice() {
           </div>
         </div>
 
-        <table className="w-full mb-8">
+        <div className="overflow-x-auto mb-8">
+          <table className="w-full min-w-[500px]">
           <thead>
             <tr className="border-b border-slate-200">
               <th className="text-left py-3 font-semibold text-slate-900">Item Description</th>
@@ -118,16 +119,17 @@ export default function Invoice() {
             </tr>
           </tbody>
         </table>
+        </div>
 
         <div className="flex justify-end">
-          <div className="w-1/2">
+          <div className="w-full sm:w-1/2">
             <div className="flex justify-between py-2 border-b border-slate-200">
               <span className="font-semibold text-slate-600">Subtotal</span>
               <span className="text-slate-900">${Number((sale.quantity || 0) * (sale.unit_price || 0)).toFixed(2)}</span>
             </div>
             <div className="flex justify-between py-3">
               <span className="font-bold text-lg text-slate-900">Total</span>
-              <span className="font-bold text-lg text-blue-600">${Number((sale.quantity || 0) * (sale.unit_price || 0)).toFixed(2)}</span>
+              <span className="font-bold text-lg text-violet-600">${Number((sale.quantity || 0) * (sale.unit_price || 0)).toFixed(2)}</span>
             </div>
           </div>
         </div>

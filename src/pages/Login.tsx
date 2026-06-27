@@ -75,7 +75,7 @@ export default function Login() {
           <CardFooter className="flex flex-col space-y-4">
             <Button 
               type="submit" 
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white" 
               disabled={loading}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -83,7 +83,7 @@ export default function Login() {
             </Button>
             <div className="text-center text-sm text-slate-500">
               Don't have an account?{' '}
-              <Link to="/register" className="font-medium text-blue-600 hover:underline">
+              <Link to="/register" className="font-medium text-violet-600 hover:underline">
                 Sign up
               </Link>
             </div>

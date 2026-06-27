@@ -53,7 +53,7 @@ export default function Reports() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
       </div>
     );
   }
@@ -65,7 +65,7 @@ export default function Reports() {
           title="Reports" 
           description="View and print detailed reports across all modules."
         />
-        <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={handlePrint} className="bg-violet-600 hover:bg-violet-700">
           <Printer className="w-4 h-4 mr-2" />
           Print Report
         </Button>
@@ -77,7 +77,7 @@ export default function Reports() {
       </div>
 
       <Tabs defaultValue="sales" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 print:hidden">
+        <TabsList className="flex w-full flex-wrap sm:grid sm:grid-cols-5 h-auto print:hidden">
           <TabsTrigger value="sales">Sales</TabsTrigger>
           <TabsTrigger value="purchases">Purchases</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
@@ -89,6 +89,7 @@ export default function Reports() {
           <Card className="print:shadow-none print:border-none">
             <CardContent className="pt-6">
               <h2 className="text-xl font-bold mb-4">Sales Report</h2>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -114,6 +115,7 @@ export default function Reports() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -122,6 +124,7 @@ export default function Reports() {
           <Card className="print:shadow-none print:border-none">
             <CardContent className="pt-6">
               <h2 className="text-xl font-bold mb-4">Purchases Report</h2>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -147,6 +150,7 @@ export default function Reports() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -155,6 +159,7 @@ export default function Reports() {
           <Card className="print:shadow-none print:border-none">
             <CardContent className="pt-6">
               <h2 className="text-xl font-bold mb-4">Products Inventory Report</h2>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -180,6 +185,7 @@ export default function Reports() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -188,6 +194,7 @@ export default function Reports() {
           <Card className="print:shadow-none print:border-none">
             <CardContent className="pt-6">
               <h2 className="text-xl font-bold mb-4">Customers Report</h2>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -209,6 +216,7 @@ export default function Reports() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -217,6 +225,7 @@ export default function Reports() {
           <Card className="print:shadow-none print:border-none">
             <CardContent className="pt-6">
               <h2 className="text-xl font-bold mb-4">Suppliers Report</h2>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -238,6 +247,7 @@ export default function Reports() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
