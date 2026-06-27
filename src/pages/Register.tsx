@@ -66,6 +66,7 @@ export default function Register() {
                 id="password"
                 type="password"
                 required
+                minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}

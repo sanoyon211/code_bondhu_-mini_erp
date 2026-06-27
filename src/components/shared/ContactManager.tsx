@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, Loader2, AlertCircle } from 'lucide-react';
-import { productService } from '@/services/productService';
-import type { Product } from '@/types';
-import { StatusBadge, getStockStatus } from '@/components/shared/StatusBadge';
 import {
   Table,
   TableBody,
@@ -25,121 +22,153 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
-export default function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
+export type ContactType = 'customer' | 'supplier';
+
+export interface ContactData {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  company?: string; // For customers
+  contact_name?: string; // For suppliers
+  created_at?: string;
+}
+
+interface ContactManagerProps {
+  type: ContactType;
+  title: string;
+  description: string;
+  fetchData: () => Promise<ContactData[]>;
+  createData: (data: any) => Promise<any>;
+  updateData: (id: string, data: any) => Promise<any>;
+  deleteData: (id: string) => Promise<void>;
+}
+
+export function ContactManager({
+  type,
+  title,
+  description,
+  fetchData,
+  createData,
+  updateData,
+  deleteData,
+}: ContactManagerProps) {
+  const [dataList, setDataList] = useState<ContactData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [formData, setFormData] = useState({
+  const [editingItem, setEditingItem] = useState<ContactData | null>(null);
+  
+  const defaultFormData = {
     name: '',
-    sku: '',
-    category: '',
-    price: 0,
-    cost_price: 0,
-    stock_quantity: 0,
-    description: '',
-  });
+    email: '',
+    phone: '',
+    address: '',
+    company: '',
+    contact_name: '',
+  };
+  
+  const [formData, setFormData] = useState(defaultFormData);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<ContactData | null>(null);
 
-  const fetchProducts = async () => {
+  const loadData = async () => {
     try {
       setIsLoading(true);
-      const data = await productService.getProducts();
-      setProducts(data);
+      const data = await fetchData();
+      setDataList(data);
     } catch (error: any) {
-      toast.error(error.message || 'Failed to fetch products');
+      toast.error(error.message || `Failed to fetch ${type}s`);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
+    loadData();
   }, []);
 
-  const handleOpenDialog = (product?: Product) => {
-    if (product) {
-      setEditingProduct(product);
+  const handleOpenDialog = (item?: ContactData) => {
+    if (item) {
+      setEditingItem(item);
       setFormData({
-        name: product.name,
-        sku: product.sku,
-        category: product.category || '',
-        price: product.price,
-        cost_price: product.cost_price,
-        stock_quantity: product.stock_quantity,
-        description: product.description || '',
+        name: item.name,
+        email: item.email,
+        phone: item.phone || '',
+        address: item.address || '',
+        company: item.company || '',
+        contact_name: item.contact_name || '',
       });
     } else {
-      setEditingProduct(null);
-      setFormData({
-        name: '',
-        sku: '',
-        category: '',
-        price: 0,
-        cost_price: 0,
-        stock_quantity: 0,
-        description: '',
-      });
+      setEditingItem(null);
+      setFormData(defaultFormData);
     }
     setIsDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
-    setEditingProduct(null);
+    setEditingItem(null);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'price' || name === 'cost_price' || name === 'stock_quantity' 
-        ? parseFloat(value) || 0 
-        : value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setIsSubmitting(true);
-      if (editingProduct) {
-        await productService.updateProduct(editingProduct.id, formData);
-        toast.success('Product updated successfully');
+      const payload: any = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        address: formData.address || null,
+      };
+      
+      if (type === 'customer') {
+        payload.company = formData.company || null;
       } else {
-        await productService.createProduct(formData);
-        toast.success('Product created successfully');
+        payload.contact_name = formData.contact_name || null;
+      }
+
+      if (editingItem) {
+        await updateData(editingItem.id, payload);
+        toast.success(`${type === 'customer' ? 'Customer' : 'Supplier'} updated successfully`);
+      } else {
+        await createData(payload);
+        toast.success(`${type === 'customer' ? 'Customer' : 'Supplier'} created successfully`);
       }
       handleCloseDialog();
-      fetchProducts();
+      loadData();
     } catch (error: any) {
-      toast.error(error.message || 'Failed to save product');
+      toast.error(error.message || 'Failed to save');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDeletePrompt = (product: Product) => {
-    setProductToDelete(product);
+  const handleDeletePrompt = (item: ContactData) => {
+    setItemToDelete(item);
     setIsDeleteDialogOpen(true);
   };
 
   const handleDelete = async () => {
-    if (!productToDelete) return;
+    if (!itemToDelete) return;
     
     try {
       setIsSubmitting(true);
-      await productService.deleteProduct(productToDelete.id);
-      toast.success('Product deleted successfully');
+      await deleteData(itemToDelete.id);
+      toast.success(`${type === 'customer' ? 'Customer' : 'Supplier'} deleted successfully`);
       setIsDeleteDialogOpen(false);
-      setProductToDelete(null);
-      fetchProducts();
+      setItemToDelete(null);
+      loadData();
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete product');
+      toast.error(error.message || 'Failed to delete');
     } finally {
       setIsSubmitting(false);
     }
@@ -148,12 +177,12 @@ export default function Products() {
   return (
     <div className="w-full">
       <PageHeader 
-        title="Products" 
-        description="Manage your product inventory."
+        title={title} 
+        description={description}
         action={
           <Button onClick={() => handleOpenDialog()} className="bg-blue-600 hover:bg-blue-700">
             <Plus className="w-4 h-4 mr-2" />
-            Add Product
+            Add {type === 'customer' ? 'Customer' : 'Supplier'}
           </Button>
         }
       />
@@ -164,51 +193,49 @@ export default function Products() {
             <TableHeader>
               <TableRow className="bg-slate-50">
                 <TableHead className="font-semibold text-slate-900">Name</TableHead>
-                <TableHead className="font-semibold text-slate-900">SKU</TableHead>
-                <TableHead className="font-semibold text-slate-900">Category</TableHead>
-                <TableHead className="font-semibold text-slate-900 text-right">Selling Price</TableHead>
-                <TableHead className="font-semibold text-slate-900 text-right">Stock</TableHead>
-                <TableHead className="font-semibold text-slate-900">Status</TableHead>
+                {type === 'customer' && <TableHead className="font-semibold text-slate-900">Company</TableHead>}
+                {type === 'supplier' && <TableHead className="font-semibold text-slate-900">Contact Person</TableHead>}
+                <TableHead className="font-semibold text-slate-900">Email</TableHead>
+                <TableHead className="font-semibold text-slate-900">Phone</TableHead>
+                <TableHead className="font-semibold text-slate-900">Address</TableHead>
                 <TableHead className="font-semibold text-slate-900 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-32 text-center">
+                  <TableCell colSpan={6} className="h-32 text-center">
                     <Loader2 className="w-6 h-6 animate-spin text-slate-400 mx-auto" />
-                    <span className="text-slate-500 mt-2 block">Loading products...</span>
+                    <span className="text-slate-500 mt-2 block">Loading {type}s...</span>
                   </TableCell>
                 </TableRow>
-              ) : products.length === 0 ? (
+              ) : dataList.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-32 text-center">
+                  <TableCell colSpan={6} className="h-32 text-center">
                     <div className="flex flex-col items-center justify-center text-slate-500">
                       <AlertCircle className="w-8 h-8 mb-2 text-slate-400" />
-                      <p>No products found.</p>
+                      <p>No {type}s found.</p>
                       <Button variant="link" onClick={() => handleOpenDialog()} className="mt-1 text-blue-600">
-                        Add your first product
+                        Add your first {type}
                       </Button>
                     </div>
                   </TableCell>
                 </TableRow>
               ) : (
-                products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell className="font-medium text-slate-900">{product.name}</TableCell>
-                    <TableCell className="text-slate-500">{product.sku}</TableCell>
-                    <TableCell className="text-slate-500">{product.category || '-'}</TableCell>
-                    <TableCell className="text-right font-medium">${Number(product.price || 0).toFixed(2)}</TableCell>
-                    <TableCell className="text-right">{product.stock_quantity}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={getStockStatus(product.stock_quantity)} />
-                    </TableCell>
+                dataList.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-medium text-slate-900">{item.name}</TableCell>
+                    {type === 'customer' && <TableCell className="text-slate-500">{item.company || '-'}</TableCell>}
+                    {type === 'supplier' && <TableCell className="text-slate-500">{item.contact_name || '-'}</TableCell>}
+                    <TableCell className="text-slate-500">{item.email}</TableCell>
+                    <TableCell className="text-slate-500">{item.phone || '-'}</TableCell>
+                    <TableCell className="text-slate-500 max-w-xs truncate" title={item.address}>{item.address || '-'}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          onClick={() => handleOpenDialog(product)}
+                          onClick={() => handleOpenDialog(item)}
                           className="h-8 px-2 text-slate-600 hover:text-blue-600"
                         >
                           <Edit className="w-4 h-4" />
@@ -217,7 +244,7 @@ export default function Products() {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          onClick={() => handleDeletePrompt(product)}
+                          onClick={() => handleDeletePrompt(item)}
                           className="h-8 px-2 text-slate-600 hover:text-red-600"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -233,95 +260,78 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Create/Edit Product Dialog */}
+      {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+              <DialogTitle>{editingItem ? `Edit ${type === 'customer' ? 'Customer' : 'Supplier'}` : `Add New ${type === 'customer' ? 'Customer' : 'Supplier'}`}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Product Name *</Label>
-                  <Input 
-                    id="name" 
-                    name="name" 
-                    value={formData.name} 
-                    onChange={handleChange} 
-                    required 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="sku">SKU *</Label>
-                  <Input 
-                    id="sku" 
-                    name="sku" 
-                    value={formData.sku} 
-                    onChange={handleChange} 
-                    required 
-                  />
-                </div>
-              </div>
-              
               <div className="grid gap-2">
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="name">{type === 'customer' ? 'Customer Name' : 'Supplier Name'} *</Label>
                 <Input 
-                  id="category" 
-                  name="category" 
-                  value={formData.category} 
+                  id="name" 
+                  name="name" 
+                  value={formData.name} 
                   onChange={handleChange} 
+                  required 
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              {type === 'customer' && (
                 <div className="grid gap-2">
-                  <Label htmlFor="price">Selling Price *</Label>
+                  <Label htmlFor="company">Company</Label>
                   <Input 
-                    id="price" 
-                    name="price" 
-                    type="number" 
-                    min="0"
-                    step="0.01"
-                    value={formData.price || ''} 
+                    id="company" 
+                    name="company" 
+                    value={formData.company} 
+                    onChange={handleChange} 
+                  />
+                </div>
+              )}
+
+              {type === 'supplier' && (
+                <div className="grid gap-2">
+                  <Label htmlFor="contact_name">Contact Person</Label>
+                  <Input 
+                    id="contact_name" 
+                    name="contact_name" 
+                    value={formData.contact_name} 
+                    onChange={handleChange} 
+                  />
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input 
+                    id="email" 
+                    name="email" 
+                    type="email"
+                    value={formData.email} 
                     onChange={handleChange} 
                     required 
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="cost_price">Cost Price *</Label>
+                  <Label htmlFor="phone">Phone</Label>
                   <Input 
-                    id="cost_price" 
-                    name="cost_price" 
-                    type="number" 
-                    min="0"
-                    step="0.01"
-                    value={formData.cost_price || ''} 
+                    id="phone" 
+                    name="phone" 
+                    value={formData.phone} 
                     onChange={handleChange} 
-                    required 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="stock_quantity">Stock *</Label>
-                  <Input 
-                    id="stock_quantity" 
-                    name="stock_quantity" 
-                    type="number" 
-                    min="0"
-                    step="1"
-                    value={formData.stock_quantity || ''} 
-                    onChange={handleChange} 
-                    required 
                   />
                 </div>
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="address">Address</Label>
                 <Textarea 
-                  id="description" 
-                  name="description" 
-                  value={formData.description} 
+                  id="address" 
+                  name="address" 
+                  value={formData.address} 
                   onChange={handleChange} 
                   rows={3}
                 />
@@ -333,7 +343,7 @@ export default function Products() {
               </Button>
               <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                {editingProduct ? 'Save Changes' : 'Create Product'}
+                {editingItem ? 'Save Changes' : `Create ${type === 'customer' ? 'Customer' : 'Supplier'}`}
               </Button>
             </DialogFooter>
           </form>
@@ -344,11 +354,11 @@ export default function Products() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Delete Product</DialogTitle>
+            <DialogTitle>Delete {type === 'customer' ? 'Customer' : 'Supplier'}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-slate-600">
-              Are you sure you want to delete <span className="font-semibold text-slate-900">{productToDelete?.name}</span>? This action cannot be undone.
+              Are you sure you want to delete <span className="font-semibold text-slate-900">{itemToDelete?.name}</span>? This action cannot be undone.
             </p>
           </div>
           <DialogFooter>

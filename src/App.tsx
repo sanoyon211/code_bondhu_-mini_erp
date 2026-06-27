@@ -8,6 +8,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
+import Customers from './pages/Customers';
+import Suppliers from './pages/Suppliers';
 import './App.css';
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
           }>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/suppliers" element={<Suppliers />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Route>
         </Routes>
