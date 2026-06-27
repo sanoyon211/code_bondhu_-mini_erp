@@ -35,10 +35,15 @@ export interface Purchase {
   id: string; // UUID
   created_at: string;
   supplier_id: string;
+  product_id: string;
+  quantity: number;
+  unit_cost: number;
   total_amount: number;
   status: 'PENDING' | 'COMPLETED' | 'CANCELLED';
   notes?: string;
-  // In a real app, you might also have PurchaseItem[] here
+  // Joined fields
+  products?: { name: string };
+  suppliers?: { name: string };
 }
 
 export interface Sale {
