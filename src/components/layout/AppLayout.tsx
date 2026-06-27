@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
@@ -11,6 +11,20 @@ export function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const path = location.pathname;
+    let pageName = 'Dashboard';
+    
+    if (path.startsWith('/products')) pageName = 'Products';
+    else if (path.startsWith('/customers')) pageName = 'Customers';
+    else if (path.startsWith('/suppliers')) pageName = 'Suppliers';
+    else if (path.startsWith('/purchases')) pageName = 'Purchases';
+    else if (path.startsWith('/sales')) pageName = 'Sales';
+    else if (path.startsWith('/reports')) pageName = 'Reports';
+    
+    document.title = `${pageName} - Mini ERP`;
+  }, [location.pathname]);
 
   const isActive = (path: string) => location.pathname.startsWith(path);
   const handleLogout = async () => {
