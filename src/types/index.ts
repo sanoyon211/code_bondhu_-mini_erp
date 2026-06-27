@@ -49,10 +49,16 @@ export interface Purchase {
 export interface Sale {
   id: string; // UUID
   created_at: string;
+  invoice_no?: string;
   customer_id: string;
+  product_id: string;
+  quantity: number;
+  unit_price: number;
   total_amount: number;
   status: 'PENDING' | 'COMPLETED' | 'CANCELLED';
   payment_method?: string;
   notes?: string;
-  // In a real app, you might also have SaleItem[] here
+  // Joined fields
+  products?: { name: string };
+  customers?: { name: string; email: string; phone: string; address: string; company?: string };
 }

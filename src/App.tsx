@@ -11,6 +11,8 @@ import Products from './pages/Products';
 import Customers from './pages/Customers';
 import Suppliers from './pages/Suppliers';
 import Purchases from './pages/Purchases';
+import Sales from './pages/Sales';
+import Invoice from './pages/Invoice';
 import './App.css';
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
             <Route path="/customers" element={<Customers />} />
             <Route path="/suppliers" element={<Suppliers />} />
             <Route path="/purchases" element={<Purchases />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/sales/:id/invoice" element={<Invoice />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Route>
         </Routes>
