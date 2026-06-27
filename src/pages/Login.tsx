@@ -5,12 +5,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -80,15 +81,28 @@ export default function Login() {
                   Forgot password?
                 </Link>
               </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                className="h-11 bg-white/50 border-slate-200 focus:bg-white focus:ring-violet-500 focus:border-violet-500 transition-all"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  className="h-11 bg-white/50 border-slate-200 focus:bg-white focus:ring-violet-500 focus:border-violet-500 transition-all pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-5 pb-8 pt-4">
