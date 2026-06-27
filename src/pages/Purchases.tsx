@@ -213,7 +213,7 @@ export default function Purchases() {
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label>Supplier *</Label>
-                <Select onValueChange={(val) => handleSelectChange('supplier_id', val)} value={formData.supplier_id}>
+                <Select onValueChange={(val) => handleSelectChange('supplier_id', val as string)} value={formData.supplier_id}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a supplier">
                       {formData.supplier_id ? suppliers.find(s => s.id === formData.supplier_id)?.name : "Select a supplier"}
@@ -229,7 +229,7 @@ export default function Purchases() {
 
               <div className="grid gap-2">
                 <Label>Product *</Label>
-                <Select onValueChange={(val) => handleSelectChange('product_id', val)} value={formData.product_id}>
+                <Select onValueChange={(val) => handleSelectChange('product_id', val as string)} value={formData.product_id}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a product">
                       {formData.product_id ? products.find(p => p.id === formData.product_id)?.name : "Select a product"}

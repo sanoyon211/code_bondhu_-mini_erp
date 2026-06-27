@@ -236,7 +236,7 @@ export default function Sales() {
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label>Customer *</Label>
-                <Select onValueChange={(val) => handleSelectChange('customer_id', val)} value={formData.customer_id}>
+                <Select onValueChange={(val) => handleSelectChange('customer_id', val as string)} value={formData.customer_id}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a customer">
                       {formData.customer_id ? customers.find(c => c.id === formData.customer_id)?.name : "Select a customer"}
@@ -252,7 +252,7 @@ export default function Sales() {
 
               <div className="grid gap-2">
                 <Label>Product *</Label>
-                <Select onValueChange={(val) => handleSelectChange('product_id', val)} value={formData.product_id}>
+                <Select onValueChange={(val) => handleSelectChange('product_id', val as string)} value={formData.product_id}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a product">
                       {formData.product_id ? products.find(p => p.id === formData.product_id)?.name : "Select a product"}
